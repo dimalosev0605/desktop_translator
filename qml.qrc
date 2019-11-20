@@ -1,5 +1,19 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Initial_item_in_stack.qml</file>
+        <file>Initial_item_btn.qml</file>
+        <file>Translator_page.qml</file>
+        <file>Menu_bar_in_translator.qml</file>
+        <file>Universal_back_btn.qml</file>
+        <file>back_btn_icon.svg</file>
+        <file>my_files_icon.svg</file>
+        <file>open_file_icon.svg</file>
+        <file>save_file_icon.svg</file>
+        <file>settings_btn_icon.svg</file>
+        <file>Menu_bar_item.qml</file>
+        <file>Menu_item.qml</file>
+        <file>Edit_record_btn.qml</file>
+        <file>Translator_control.qml</file>
     </qresource>
 </RCC>
