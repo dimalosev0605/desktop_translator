@@ -15,5 +15,10 @@
         <file>Menu_item.qml</file>
         <file>Edit_record_btn.qml</file>
         <file>Translator_control.qml</file>
+        <file>edit_icon.svg</file>
+        <file>font-size_icon.svg</file>
+        <file>about_icon.svg</file>
+        <file>language_icon.svg</file>
+        <file>Block_delegate.qml</file>
     </qresource>
 </RCC>

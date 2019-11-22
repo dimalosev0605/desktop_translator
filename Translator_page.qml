@@ -1,11 +1,16 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import Blocks_data_model_qml 1.0
 
 Item {
     id: translator_page
 
     Menu_bar_in_translator {
         id: menu_bar
+    }
+
+    Blocks_data_model {
+        id: blocks_data_model
     }
 
     TextField {
@@ -17,6 +22,7 @@ Item {
         height: 30
         width: translator_page.width / 6
         placeholderText: "Input text"
+        onTextChanged: blocks_data_model.on_input_changed(user_input_field.text)
     }
     Item {
         id: repeating_text_space
@@ -79,10 +85,60 @@ Item {
         anchors.top: add_btn.top
         color: "#ff0000"
         text: "Clear"
+        mouse_area.onClicked: {
+            user_input_field.clear()
+            means_field.clear()
+            translations_filed.clear()
+        }
+    }
+
+    Shortcut {
+        sequence: "Alt+C"
+        onActivated: clear_btn.mouse_area.clicked(MouseArea)
     }
 
 
-
+    Rectangle {
+        id: blocks_scroll_view_frame
+        anchors.top: translations_filed.bottom
+        anchors.topMargin: 20
+        anchors.bottom: translator_page.bottom
+        anchors.bottomMargin: 5
+        anchors.left: translations_filed.left
+        width: translator_page.width / 2    // need consider anchors ???
+        border.width: 1
+        border.color: "black"
+        ScrollView {
+            id: blocks_scroll_view
+            anchors.fill: parent
+            ListView {
+                anchors.fill: parent
+                spacing: 10
+                clip: true
+                model: blocks_data_model
+                delegate: Block_delegate {
+                    transcription: String(model.transcription)
+                    type_speech: String(model.type_speech)
+                    syns: String(model.syns)
+                    means: String(model.means)
+                    examples: String(model.exaples)
+                }
+            }
+        }
+    }
+    Rectangle {
+        id: words_scroll_view_frame
+        anchors.left: blocks_scroll_view_frame.right
+        anchors.leftMargin: 20
+        anchors.top: translations_filed.bottom
+        anchors.topMargin: 20
+        anchors.right: translator_page.right
+        anchors.rightMargin: 20
+        anchors.bottom: translator_page.bottom
+        anchors.bottomMargin: 5
+        border.width: 1
+        border.color: "black"
+    }
 }
 
 

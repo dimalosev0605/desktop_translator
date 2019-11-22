@@ -11,7 +11,8 @@ Control {
         color: control.hovered ? "#ff0000" : "white"
         Image {
             anchors.fill: parent
-//            source: ""
+            visible: control.hovered ? true : false
+            source: "edit_icon.svg"
         }
         MouseArea {
             id: mouse_area

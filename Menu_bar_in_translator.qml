@@ -43,17 +43,17 @@ Item {
                 property int count_of_items: 3
                 height: count_of_items * 30
                 Menu_item {
-//                    img.source: ""
+                    img.source: "language_icon.svg"
                     text: "Langs"
 //                    mouse_area.onClicked:
                 }
                 Menu_item {
-//                    img.source: ""
+                    img.source: "font-size_icon.svg"
                     text: "Font"
 //                    mouse_area.onClicked:
                 }
                 Menu_item {
-//                    img.source: ""
+                    img.source: "about_icon.svg"
                     text: "About"
 //                    mouse_area.onClicked:
                 }
