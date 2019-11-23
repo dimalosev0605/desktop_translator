@@ -72,6 +72,12 @@ void Blocks_data_model::on_input_changed(const QString &user_input)
     yandex_api_connection.send_request_to_api_voc(user_input);
 }
 
+QString Blocks_data_model::get_transcription()
+{
+    if(blocks.empty()) return QString();
+    return blocks[0].get_transcription();
+}
+
 void Blocks_data_model::process_blocks()
 {
     auto temp = yandex_api_connection.get_blocks();

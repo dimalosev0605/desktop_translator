@@ -66,3 +66,4 @@ QVector<Block> &Yandex_api_parser::get_blocks()
 {
     return blocks;
 }
+

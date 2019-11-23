@@ -4,19 +4,23 @@ import QtQuick.Controls 2.4
 Control {
     id: control
 
-    property alias mouse_area: mouse_area
-
     Rectangle {
         anchors.fill: parent
-        color: control.hovered ? "#ff0000" : "white"
+        color: control.hovered ? "#cfcfcf" : "white"
         Image {
             anchors.fill: parent
-            visible: control.hovered ? true : false
             source: "edit_icon.svg"
         }
         MouseArea {
             id: mouse_area
             anchors.fill: parent
+            onClicked: {
+                words_data_model.remove_word(words_data_model.get_repeating_index())
+                repeating_text.text = ""
+                user_input_field.text = words_data_model.word_get_word()
+                means_field.text = words_data_model.word_get_means()
+                translations_filed.text = words_data_model.word_get_syns()
+            }
         }
     }
 }

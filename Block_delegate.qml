@@ -3,10 +3,10 @@ import QtQuick.Controls 2.4
 
 Rectangle {
     id: root
-    width: blocks_scroll_view.width
-    height: blocks_scroll_view.height / 3
+    width: blocks_scroll_view_frame.width
+    height: blocks_scroll_view_frame.height / 2
     border.width: 1
-    border.color: "black"
+    border.color: activeFocus ? "#00ff00" : "black"
 
     property alias transcription: transcription.text
     property alias type_speech: type_speech.text
@@ -25,6 +25,8 @@ Rectangle {
         anchors.topMargin: top_margin
         color: "gray"
         fontSizeMode: Text.Fit
+        minimumPointSize: 5
+        font.pointSize: 10
         height: text_height
     }
     Text {
@@ -34,6 +36,8 @@ Rectangle {
         anchors.top: transcription.top
         color: "green"
         fontSizeMode: Text.Fit
+        minimumPointSize: 5
+        font.pointSize: 10
         height: text_height
     }
     Text {
@@ -45,7 +49,7 @@ Rectangle {
         height: text_height
         verticalAlignment: Text.AlignLeft
         horizontalAlignment: Text.AlignLeft
-        width: root.width - anchors.leftMargin
+        width: root.width
         fontSizeMode: Text.Fit
         minimumPointSize: 5
         font.pointSize: 10
@@ -62,7 +66,7 @@ Rectangle {
         height: text_height
         verticalAlignment: Text.AlignLeft
         horizontalAlignment: Text.AlignLeft
-        width: root.width - anchors.leftMargin
+        width: root.width
         minimumPointSize: 5
         font.pointSize: 10
         elide: Text.ElideRight
@@ -77,7 +81,7 @@ Rectangle {
         color: "gray"
         verticalAlignment: Text.AlignLeft
         horizontalAlignment: Text.AlignLeft
-        width: root.width - anchors.leftMargin
+        width: root.width
         fontSizeMode: Text.Fit
         minimumPointSize: 5
         font.pointSize: 10
@@ -90,7 +94,7 @@ Rectangle {
         anchors.rightMargin: 1
         anchors.bottom: root.bottom
         anchors.bottomMargin: 1
-        text: index
+        text: index + 1
         minimumPointSize: 3
         font.pointSize: 10
         fontSizeMode: Text.Fit

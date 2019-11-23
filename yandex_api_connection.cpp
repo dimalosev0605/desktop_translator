@@ -33,6 +33,11 @@ void Yandex_api_connection::receive_data_from_api_voc(QNetworkReply *reply)
             blocks = parser.get_blocks(); // move ???
             emit blocks_ready();
         }
+        else
+        {
+            blocks.clear();
+            emit blocks_ready();
+        }
     }
     reply->deleteLater();
 }

@@ -34,6 +34,7 @@ public:
 
 public slots:
     void on_input_changed(const QString& user_input);
+    QString get_transcription(); // God forgive me
 };
 
 #endif // BLOCKS_DATA_MODEL_H

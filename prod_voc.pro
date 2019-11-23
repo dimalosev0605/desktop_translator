@@ -17,7 +17,9 @@ SOURCES += \
     blocks_data_model.cpp \
     block.cpp \
     yandex_api_connection.cpp \
-    yandex_api_parser.cpp
+    yandex_api_parser.cpp \
+    word.cpp \
+    words_data_model.cpp
 
 RESOURCES += qml.qrc
 
@@ -38,4 +40,6 @@ HEADERS += \
     blocks_data_model.h \
     block.h \
     yandex_api_connection.h \
-    yandex_api_parser.h
+    yandex_api_parser.h \
+    word.h \
+    words_data_model.h

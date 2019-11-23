@@ -1,6 +1,7 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import Blocks_data_model_qml 1.0
+import Words_data_model_qml 1.0
 
 Item {
     id: translator_page
@@ -13,6 +14,15 @@ Item {
         id: blocks_data_model
     }
 
+    Words_data_model {
+        id: words_data_model
+        onRepeating_was_found: {
+            repeating_text.text = words_data_model.word_get_word() + " " +
+                    words_data_model.word_get_means() + " " + words_data_model.word_get_syns() + " " +
+                    words_data_model.word_get_date()
+        }
+    }
+
     TextField {
         id: user_input_field
         anchors.top: menu_bar.bottom
@@ -22,7 +32,12 @@ Item {
         height: 30
         width: translator_page.width / 6
         placeholderText: "Input text"
-        onTextChanged: blocks_data_model.on_input_changed(user_input_field.text)
+        KeyNavigation.tab: means_field
+        onTextChanged: {
+            blocks_data_model.on_input_changed(user_input_field.text)
+            repeating_text.text = ""
+            words_data_model.find_repeating(user_input_field.text)
+        }
     }
     Item {
         id: repeating_text_space
@@ -42,10 +57,10 @@ Item {
             font.pointSize: 10
             elide: Text.ElideRight
             wrapMode: Text.WordWrap
-            text: "LALALALAALALALAL"
         }
         Edit_record_btn {
             id: edit_record_btn
+            visible: (repeating_text.text === "") ? false : true
             anchors.right: repeating_text_space.right
             anchors.top: repeating_text_space.top
             height: repeating_text_space.height
@@ -60,6 +75,7 @@ Item {
         anchors.right: clear_btn.right
         height: user_input_field.height
         placeholderText: "Input means"
+        KeyNavigation.tab: translations_filed
     }
     TextField {
         id: translations_filed
@@ -69,6 +85,7 @@ Item {
         anchors.right: clear_btn.right
         height: user_input_field.height
         placeholderText: "Input translations"
+        KeyNavigation.tab: blocks_list_view
     }
     Translator_control {
         id: add_btn
@@ -77,6 +94,11 @@ Item {
         anchors.top: user_input_field.top
         color: "#00ff00"
         text: "Add"
+        mouse_area.onClicked: {
+            words_data_model.add_word(user_input_field.text, blocks_data_model.get_transcription(),
+                                      means_field.text, translations_filed.text)
+            clear_btn.mouse_area.clicked(MouseArea)
+        }
     }
     Translator_control {
         id: clear_btn
@@ -96,6 +118,10 @@ Item {
         sequence: "Alt+C"
         onActivated: clear_btn.mouse_area.clicked(MouseArea)
     }
+    Shortcut {
+        sequence: "Alt+A"
+        onActivated: add_btn.mouse_area.clicked(MouseArea)
+    }
 
 
     Rectangle {
@@ -109,12 +135,15 @@ Item {
         border.width: 1
         border.color: "black"
         ScrollView {
-            id: blocks_scroll_view
             anchors.fill: parent
             ListView {
+                id: blocks_list_view
                 anchors.fill: parent
                 spacing: 10
                 clip: true
+                snapMode: ListView.SnapOneItem
+                KeyNavigation.tab: user_input_field
+                highlightMoveVelocity: 800
                 model: blocks_data_model
                 delegate: Block_delegate {
                     transcription: String(model.transcription)
@@ -138,6 +167,22 @@ Item {
         anchors.bottomMargin: 5
         border.width: 1
         border.color: "black"
+        ScrollView {
+            anchors.fill: parent
+            ListView {
+                id: words_list_view
+                anchors.fill: parent
+                spacing: 10
+                clip: true
+                model: words_data_model
+                delegate: Word_delegate {
+                    word_and_transcription: String(model.word + " " + model.transcription)
+                    means: String(model.means)
+                    syns: String(model.syns)
+                    date: String(model.date)
+                }
+            }
+        }
     }
 }
 

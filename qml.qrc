@@ -20,5 +20,6 @@
         <file>about_icon.svg</file>
         <file>language_icon.svg</file>
         <file>Block_delegate.qml</file>
+        <file>Word_delegate.qml</file>
     </qresource>
 </RCC>
