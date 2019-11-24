@@ -6,6 +6,20 @@ import Words_data_model_qml 1.0
 Item {
     id: translator_page
 
+    function show_font_size_settings_w()
+    {
+        var component = Qt.createComponent("Font_size_settings_w.qml")
+        var window = component.createObject(translator_page)
+        window.show()
+    }
+
+    function show_change_langs_w()
+    {
+        var component = Qt.createComponent("Change_langs_w.qml")
+        var window = component.createObject(translator_page)
+        window.show()
+    }
+
     Menu_bar_in_translator {
         id: menu_bar
     }
@@ -33,6 +47,7 @@ Item {
         width: translator_page.width / 6
         placeholderText: "Input text"
         KeyNavigation.tab: means_field
+        font.pointSize: 10
         onTextChanged: {
             blocks_data_model.on_input_changed(user_input_field.text)
             repeating_text.text = ""
@@ -76,6 +91,7 @@ Item {
         height: user_input_field.height
         placeholderText: "Input means"
         KeyNavigation.tab: translations_filed
+        font.pointSize: 10
     }
     TextField {
         id: translations_filed
@@ -86,6 +102,7 @@ Item {
         height: user_input_field.height
         placeholderText: "Input translations"
         KeyNavigation.tab: blocks_list_view
+        font.pointSize: 10
     }
     Translator_control {
         id: add_btn
@@ -122,6 +139,10 @@ Item {
         sequence: "Alt+A"
         onActivated: add_btn.mouse_area.clicked(MouseArea)
     }
+    Shortcut {
+        sequence: "Alt+E"
+        onActivated: edit_record_btn.mouse_area.clicked(MouseArea)
+    }
 
 
     Rectangle {
@@ -141,10 +162,10 @@ Item {
                 anchors.fill: parent
                 spacing: 10
                 clip: true
-                snapMode: ListView.SnapOneItem
                 KeyNavigation.tab: user_input_field
                 highlightMoveVelocity: 800
                 model: blocks_data_model
+                property int font_size: 10
                 delegate: Block_delegate {
                     transcription: String(model.transcription)
                     type_speech: String(model.type_speech)
@@ -175,6 +196,10 @@ Item {
                 spacing: 10
                 clip: true
                 model: words_data_model
+                property int font_size: 10
+                onCountChanged: {
+                    currentIndex = count - 1
+                }
                 delegate: Word_delegate {
                     word_and_transcription: String(model.word + " " + model.transcription)
                     means: String(model.means)

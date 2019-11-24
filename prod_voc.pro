@@ -1,4 +1,6 @@
 QT += quick
+QT += widgets
+QT += network
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -19,7 +21,8 @@ SOURCES += \
     yandex_api_connection.cpp \
     yandex_api_parser.cpp \
     word.cpp \
-    words_data_model.cpp
+    words_data_model.cpp \
+    filemanager.cpp
 
 RESOURCES += qml.qrc
 
@@ -42,4 +45,5 @@ HEADERS += \
     yandex_api_connection.h \
     yandex_api_parser.h \
     word.h \
-    words_data_model.h
+    words_data_model.h \
+    filemanager.h

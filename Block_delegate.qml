@@ -8,6 +8,7 @@ Rectangle {
     border.width: 1
     border.color: activeFocus ? "#00ff00" : "black"
 
+
     property alias transcription: transcription.text
     property alias type_speech: type_speech.text
     property alias syns: syns.text
@@ -15,8 +16,8 @@ Rectangle {
     property alias examples: examples.text
 
     property int left_margin: 2
-    property int top_margin: 2
-    property int text_height: 20
+    property int top_margin: 0
+    property int text_height: 30
     Text {
         id: transcription
         anchors.left: root.left
@@ -26,7 +27,7 @@ Rectangle {
         color: "gray"
         fontSizeMode: Text.Fit
         minimumPointSize: 5
-        font.pointSize: 10
+        font.pointSize: blocks_list_view.font_size
         height: text_height
     }
     Text {
@@ -37,7 +38,7 @@ Rectangle {
         color: "green"
         fontSizeMode: Text.Fit
         minimumPointSize: 5
-        font.pointSize: 10
+        font.pointSize: blocks_list_view.font_size
         height: text_height
     }
     Text {
@@ -47,12 +48,10 @@ Rectangle {
         anchors.left: transcription.left
         color: "blue"
         height: text_height
-        verticalAlignment: Text.AlignLeft
-        horizontalAlignment: Text.AlignLeft
         width: root.width
         fontSizeMode: Text.Fit
         minimumPointSize: 5
-        font.pointSize: 10
+        font.pointSize: blocks_list_view.font_size
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
     }
@@ -64,11 +63,9 @@ Rectangle {
         color: "red"
         fontSizeMode: Text.Fit
         height: text_height
-        verticalAlignment: Text.AlignLeft
-        horizontalAlignment: Text.AlignLeft
         width: root.width
         minimumPointSize: 5
-        font.pointSize: 10
+        font.pointSize: blocks_list_view.font_size
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
     }
@@ -79,12 +76,10 @@ Rectangle {
         anchors.left: means.left
         anchors.bottom: root.bottom
         color: "gray"
-        verticalAlignment: Text.AlignLeft
-        horizontalAlignment: Text.AlignLeft
         width: root.width
         fontSizeMode: Text.Fit
         minimumPointSize: 5
-        font.pointSize: 10
+        font.pointSize: blocks_list_view.font_size
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
     }
@@ -96,7 +91,7 @@ Rectangle {
         anchors.bottomMargin: 1
         text: index + 1
         minimumPointSize: 3
-        font.pointSize: 10
+        font.pointSize: 8
         fontSizeMode: Text.Fit
     }
 }

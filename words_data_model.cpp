@@ -110,6 +110,44 @@ int Words_data_model::get_repeating_index()
     return repeating_index;
 }
 
+void Words_data_model::open_file()
+{
+    FileManager file_manager;
+    QString file_name = QFileDialog::getOpenFileName(nullptr, "Open file", file_manager.get_user_files_dir(), "Text files (*.abk)");
+    if(!file_name.isEmpty())
+    {
+        QFile file(file_name);
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QDataStream in(&file);
+            QVector<Word> temp;
+            in >> temp;
+            file.close();
+
+            beginInsertRows(QModelIndex(), words.size(), words.size() + temp.size() - 1);
+            words.reserve(words.size() + temp.size() + 50); // I estimate average user input per session in 50.
+            std::move(temp.begin(), temp.end(), std::back_inserter(words));
+            endInsertRows();
+        }
+    }
+}
+
+void Words_data_model::save_file()
+{
+    FileManager file_manager;
+    QString file_name = QFileDialog::getSaveFileName(nullptr, "Save file", file_manager.get_user_files_dir(), "Text files (*.abk)");
+    if(!file_name.isEmpty())
+    {
+        QFile file(file_name);
+        if(file.open(QIODevice::WriteOnly))
+        {
+            QDataStream out(&file);
+            out << words;
+            file.close();
+        }
+    }
+}
+
 
 
 

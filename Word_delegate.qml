@@ -29,7 +29,7 @@ Rectangle {
                 height: parent.height
                 fontSizeMode: Text.Fit
                 minimumPointSize: 5
-                font.pointSize: 10
+                font.pointSize: words_list_view.font_size
                 elide: Text.ElideRight
                 wrapMode: Text.WordWrap
             }
@@ -57,7 +57,7 @@ Rectangle {
                 height: parent.height
                 fontSizeMode: Text.Fit
                 minimumPointSize: 5
-                font.pointSize: 10
+                font.pointSize: words_list_view.font_size
                 elide: Text.ElideRight
                 wrapMode: Text.WordWrap
             }
@@ -75,7 +75,7 @@ Rectangle {
                 height: parent.height
                 fontSizeMode: Text.Fit
                 minimumPointSize: 5
-                font.pointSize: 10
+                font.pointSize: words_list_view.font_size
                 elide: Text.ElideRight
                 wrapMode: Text.WordWrap
             }
@@ -93,7 +93,7 @@ Rectangle {
                 height: parent.height
                 fontSizeMode: Text.Fit
                 minimumPointSize: 5
-                font.pointSize: 10
+                font.pointSize: words_list_view.font_size
                 elide: Text.ElideRight
                 wrapMode: Text.WordWrap
             }
@@ -111,7 +111,7 @@ Rectangle {
                 height: parent.height
                 fontSizeMode: Text.Fit
                 minimumPointSize: 5
-                font.pointSize: 10
+                font.pointSize: words_list_view.font_size
                 elide: Text.ElideRight
                 wrapMode: Text.WordWrap
             }

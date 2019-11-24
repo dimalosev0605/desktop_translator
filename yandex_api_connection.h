@@ -18,7 +18,7 @@ class Yandex_api_connection: public QObject
     const QString text_key_word = "&text=";
     QString key = "dict.1.1.20190429T081339Z.b542d94a3bd6e94c.44ba397a59fa5a8a20131d6e4935837e898225df";
     QString from_lang = "en";
-    QString to_lang = "ru";
+    QString on_lang = "ru";
     QString full_requset_string;
 
     Yandex_api_parser parser;
@@ -33,7 +33,10 @@ public:
     explicit Yandex_api_connection(QObject* parent = nullptr);
     void send_request_to_api_voc(const QString& user_input);
     QVector<Block>& get_blocks();
-
+    void change_from_lang(const QString& l);
+    void change_on_lang(const QString& l);
+    QString get_from_lang() const;
+    QString get_on_lang() const;
 signals:
     void blocks_ready();
 

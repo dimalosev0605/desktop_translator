@@ -21,5 +21,10 @@
         <file>language_icon.svg</file>
         <file>Block_delegate.qml</file>
         <file>Word_delegate.qml</file>
+        <file>Font_size_settings_w.qml</file>
+        <file>Font_size_slider.qml</file>
+        <file>Change_langs_w.qml</file>
+        <file>change_langs_icon.svg</file>
+        <file>My_account_page.qml</file>
     </qresource>
 </RCC>

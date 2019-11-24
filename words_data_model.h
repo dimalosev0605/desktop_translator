@@ -4,7 +4,9 @@
 #include <QAbstractListModel>
 #include <QDebug>
 #include <QVector>
+#include <QFileDialog>
 #include "word.h"
+#include "filemanager.h"
 
 class Words_data_model: public QAbstractListModel
 {
@@ -31,12 +33,13 @@ public slots:
     void add_word(const QString& w, const QString& tr, const QString& m, const QString& syns);
     void remove_word(int index);
     void find_repeating(const QString& word);
-
     QString word_get_word();
     QString word_get_means();
     QString word_get_syns();
     QString word_get_date();
     int get_repeating_index();
+    void open_file();
+    void save_file();
 signals:
     void repeating_was_found();
 };

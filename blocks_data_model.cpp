@@ -60,7 +60,7 @@ void Blocks_data_model::remove_all_rows()
 
 void Blocks_data_model::insert_rows(int first, int last, QVector<Block>& v)
 {
-    if(last <= 0) return;
+    if(last < 0) return;
     beginInsertRows(QModelIndex(), first, last);
     blocks = std::move(v);
     endInsertRows();
@@ -76,6 +76,26 @@ QString Blocks_data_model::get_transcription()
 {
     if(blocks.empty()) return QString();
     return blocks[0].get_transcription();
+}
+
+void Blocks_data_model::change_from_lang(const QString &l)
+{
+    yandex_api_connection.change_from_lang(l);
+}
+
+void Blocks_data_model::change_on_lang(const QString &l)
+{
+    yandex_api_connection.change_on_lang(l);
+}
+
+QString Blocks_data_model::get_from_lang() const
+{
+    return yandex_api_connection.get_from_lang();
+}
+
+QString Blocks_data_model::get_on_lang() const
+{
+    return yandex_api_connection.get_on_lang();
 }
 
 void Blocks_data_model::process_blocks()

@@ -18,9 +18,31 @@ QVector<Block>& Yandex_api_connection::get_blocks()
     return blocks;
 }
 
+void Yandex_api_connection::change_from_lang(const QString &l)
+{
+    from_lang = l;
+    set_full_requset_string();
+}
+
+void Yandex_api_connection::change_on_lang(const QString &l)
+{
+    on_lang = l;
+    set_full_requset_string();
+}
+
+QString Yandex_api_connection::get_from_lang() const
+{
+    return from_lang;
+}
+
+QString Yandex_api_connection::get_on_lang() const
+{
+    return on_lang;
+}
+
 void Yandex_api_connection::set_full_requset_string()
 {
-    full_requset_string = url_api_voc + key + lang_key_word + from_lang + '-' + to_lang + text_key_word;
+    full_requset_string = url_api_voc + key + lang_key_word + from_lang + '-' + on_lang + text_key_word;
 }
 
 void Yandex_api_connection::receive_data_from_api_voc(QNetworkReply *reply)

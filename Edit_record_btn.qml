@@ -4,6 +4,8 @@ import QtQuick.Controls 2.4
 Control {
     id: control
 
+    property alias mouse_area: mouse_area
+
     Rectangle {
         anchors.fill: parent
         color: control.hovered ? "#cfcfcf" : "white"

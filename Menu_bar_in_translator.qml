@@ -24,12 +24,18 @@ Item {
                 Menu_item {
                     img.source: "open_file_icon.svg"
                     text: "Open"
-//                    mouse_area.onClicked:
+                    mouse_area.onClicked: {
+                        file_menu.close()
+                        words_data_model.open_file()
+                    }
                 }
                 Menu_item {
                     img.source: "save_file_icon.svg"
                     text: "Save"
-//                    mouse_area.onClicked:
+                    mouse_area.onClicked: {
+                        file_menu.close()
+                        words_data_model.save_file()
+                    }
                 }
             }
         }
@@ -45,12 +51,18 @@ Item {
                 Menu_item {
                     img.source: "language_icon.svg"
                     text: "Langs"
-//                    mouse_area.onClicked:
+                    mouse_area.onClicked: {
+                        options_menu.close()
+                        show_change_langs_w()
+                    }
                 }
                 Menu_item {
                     img.source: "font-size_icon.svg"
                     text: "Font"
-//                    mouse_area.onClicked:
+                    mouse_area.onClicked: {
+                        options_menu.close()
+                        show_font_size_settings_w()
+                    }
                 }
                 Menu_item {
                     img.source: "about_icon.svg"
