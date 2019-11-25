@@ -22,7 +22,9 @@ SOURCES += \
     yandex_api_parser.cpp \
     word.cpp \
     words_data_model.cpp \
-    filemanager.cpp
+    filemanager.cpp \
+    client.cpp \
+    jsonhelper.cpp
 
 RESOURCES += qml.qrc
 
@@ -46,4 +48,6 @@ HEADERS += \
     yandex_api_parser.h \
     word.h \
     words_data_model.h \
-    filemanager.h
+    filemanager.h \
+    client.h \
+    jsonhelper.h
