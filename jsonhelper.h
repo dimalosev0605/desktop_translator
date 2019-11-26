@@ -8,17 +8,27 @@
 
 class JSonHelper
 {
+public:
     enum class Method {
         sign_up,
         sign_in
     };
-    QString state;
+
+    enum class State {
+        success_sing_up,
+        sign_up_conflict,
+        success_sing_in,
+        unlucky_sing_in,
+        server_error
+    };
+
+    State state;
 public:
     QByteArray create_json_doc(const QString& user_name, const QString& user_password,
                                int method, const QString& file_name, qint64 length);
-    QByteArray create_sing_in_up_doc(const QString& user_name, const QString& user_password, int method);
+    QByteArray create_sing_in_up_doc(const QString& user_name, const QString& user_password, Method method);
     bool is_json_obj(const QByteArray& data);
-    QString get_state() const;
+    State get_state() const;
 };
 
 #endif // JSONHELPER_H

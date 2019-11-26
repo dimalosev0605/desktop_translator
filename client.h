@@ -12,17 +12,12 @@ class Client: public QObject
 {
     Q_OBJECT
 
-    enum class Method {
-        sign_up,
-        sign_in
-    };
-
     QTcpSocket socket;
     QString server_ip;
     quint16 server_port = 228;
     JSonHelper json_helper;
     QByteArray data;
-    QString state;
+    JSonHelper::State state;
 
 private:
     void process_answer();
@@ -44,10 +39,14 @@ public:
 public slots:
     void sign_up(const QString& user_name, const QString& user_password);
     void sign_in(const QString& user_name, const QString& user_password);
-    void exit();
 
 signals:
     void finished_searching_host();
+    void success_sing_up();
+    void success_sign_in();
+    void sign_up_conflict();
+    void unlucky_sing_in();
+    void server_error();
 };
 
 #endif // CLIENT_H

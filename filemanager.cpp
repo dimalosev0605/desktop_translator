@@ -3,6 +3,7 @@
 const QString user_files_dir = "user_files";
 const QString user_settings_dir = "user_settings";
 const QString abk_extension = ".abk";
+const QString auth_file = "auth_file";
 
 FileManager::FileManager()
 {
@@ -38,6 +39,10 @@ QString FileManager::get_user_files_dir()
     return QCoreApplication::applicationDirPath() + '/' + user_files_dir;
 }
 
+QString FileManager::get_auth_file_path()
+{
+    return QCoreApplication::applicationDirPath() + '/' + user_settings_dir + '/' + auth_file + abk_extension;
+}
 
 
 

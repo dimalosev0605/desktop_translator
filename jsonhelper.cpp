@@ -19,12 +19,12 @@ QByteArray JSonHelper::create_json_doc(const QString &user_name, const QString &
     return doc.toJson();
 }
 
-QByteArray JSonHelper::create_sing_in_up_doc(const QString &user_name, const QString &user_password, int method)
+QByteArray JSonHelper::create_sing_in_up_doc(const QString &user_name, const QString &user_password, Method method)
 {
     QJsonObject obj;
     obj.insert(name_key, QJsonValue::fromVariant(user_name));
     obj.insert(password_key, QJsonValue::fromVariant(user_password));
-    obj.insert(method_key, QJsonValue::fromVariant(method));
+    obj.insert(method_key, QJsonValue::fromVariant(static_cast<int>(method)));
     QJsonDocument doc(obj);
     return doc.toJson();
 }
@@ -36,7 +36,7 @@ bool JSonHelper::is_json_obj(const QByteArray& data)
     {
         auto json_obj = json_doc.object();
         auto json_map = json_obj.toVariantMap();
-        state = json_map["state"].toString();
+        state = static_cast<State>(json_map["state"].toInt());
         return true;
     }
     else
@@ -45,7 +45,7 @@ bool JSonHelper::is_json_obj(const QByteArray& data)
     }
 }
 
-QString JSonHelper::get_state() const
+JSonHelper::State JSonHelper::get_state() const
 {
     return state;
 }

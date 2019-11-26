@@ -1,6 +1,12 @@
 import QtQuick 2.11
+import Settings_qml 1.0
 
 Item {
+
+    Settings {
+        id: settings
+    }
+
     Column {
         anchors.centerIn: parent
         spacing: 10
@@ -17,8 +23,9 @@ Item {
             mouse_area.onClicked: stack_view.push(translator_page_comp)
         }
         Initial_item_btn {
-            id: my_files_btn
-            text: "My files"
+            id: cloud_btn
+            text: "Cloud"
+            enabled: settings.get_user_name() === "" ? false : true
             mouse_area.onClicked: stack_view.push("")
         }
         Component {

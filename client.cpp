@@ -23,13 +23,38 @@ Client::Client(QObject* parent)
 
 void Client::process_answer()
 {
-    if(state == success_sign_up)
+    switch(state)
     {
-        qDebug() << success_sign_up;
+    case JSonHelper::State::sign_up_conflict:
+    {
+        qDebug() << "sign up conflict";
+        emit this->sign_up_conflict();
+        break;
     }
-    else
+    case JSonHelper::State::success_sing_up:
     {
-        qDebug() << sign_up_conflict;
+        qDebug() << "sign up success";
+        emit this->success_sing_up();
+        break;
+    }
+    case JSonHelper::State::server_error:
+    {
+        qDebug() << "server error";
+        emit this->server_error();
+        break;
+    }
+    case JSonHelper::State::success_sing_in:
+    {
+        qDebug() << "Success sign in";
+        emit this->success_sign_in();
+        break;
+    }
+    case JSonHelper::State::unlucky_sing_in:
+    {
+        qDebug() << "Unlucky sign in";
+        emit this->unlucky_sing_in();
+        break;
+    }
     }
 }
 
@@ -132,17 +157,12 @@ void Client::connect_to_host()
 
 void Client::sign_up(const QString& user_name, const QString& user_password)
 {
-    socket.write(json_helper.create_sing_in_up_doc(user_name, user_password, static_cast<int>(Method::sign_up)));
+    socket.write(json_helper.create_sing_in_up_doc(user_name, user_password, JSonHelper::Method::sign_up));
 }
 
 void Client::sign_in(const QString& user_name, const QString& user_password)
 {
-    socket.write(json_helper.create_sing_in_up_doc(user_name, user_password, static_cast<int>(Method::sign_in)));
-}
-
-void Client::exit()
-{
-
+    socket.write(json_helper.create_sing_in_up_doc(user_name, user_password, JSonHelper::Method::sign_in));
 }
 
 

@@ -24,7 +24,8 @@ SOURCES += \
     words_data_model.cpp \
     filemanager.cpp \
     client.cpp \
-    jsonhelper.cpp
+    jsonhelper.cpp \
+    settings.cpp
 
 RESOURCES += qml.qrc
 
@@ -50,4 +51,5 @@ HEADERS += \
     words_data_model.h \
     filemanager.h \
     client.h \
-    jsonhelper.h
+    jsonhelper.h \
+    settings.h
