@@ -134,6 +134,7 @@ void Words_data_model::open_file()
 
 void Words_data_model::save_file()
 {
+//    if(words.isEmpty()) return; // uncomment
     FileManager file_manager;
     QString file_name = QFileDialog::getSaveFileName(nullptr, "Save file", file_manager.get_user_files_dir(), "Text files (*.abk)");
     if(!file_name.isEmpty())

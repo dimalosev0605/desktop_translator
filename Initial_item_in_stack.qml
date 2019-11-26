@@ -22,11 +22,18 @@ Item {
             text: "Translator"
             mouse_area.onClicked: stack_view.push(translator_page_comp)
         }
+        Component {
+            id: cloud_page_comp
+            Cloud_page {
+                id: cloud_page
+                Component.onDestruction: print("Destroying cloud page.")
+            }
+        }
         Initial_item_btn {
             id: cloud_btn
             text: "Cloud"
-            enabled: settings.get_user_name() === "" ? false : true
-            mouse_area.onClicked: stack_view.push("")
+            enabled: settings.is_auth
+            mouse_area.onClicked: stack_view.push(cloud_page_comp)
         }
         Component {
             id: my_account_page_comp

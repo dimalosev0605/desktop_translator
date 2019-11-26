@@ -25,7 +25,9 @@ SOURCES += \
     filemanager.cpp \
     client.cpp \
     jsonhelper.cpp \
-    settings.cpp
+    settings.cpp \
+    filesdatamodelbase.cpp \
+    localfilesdatamodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -52,4 +54,6 @@ HEADERS += \
     filemanager.h \
     client.h \
     jsonhelper.h \
-    settings.h
+    settings.h \
+    filesdatamodelbase.h \
+    localfilesdatamodel.h

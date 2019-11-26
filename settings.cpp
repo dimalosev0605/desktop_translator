@@ -9,6 +9,17 @@ Settings::Settings(QObject *parent)
     load_user_settings();
 }
 
+void Settings::set_is_auth(bool v)
+{
+    is_auth = v;
+    emit is_auth_changed();
+}
+
+bool Settings::get_is_auth() const
+{
+    return is_auth;
+}
+
 void Settings::save_user_settings(const QString &user_name, const QString &user_password)
 {
     this->user_name = user_name;
@@ -22,7 +33,9 @@ void Settings::save_user_settings(const QString &user_name, const QString &user_
     if(file.open(QIODevice::WriteOnly))
     {
         file.write(doc.toJson());
+        set_is_auth(true);
     }
+    file.close();
 }
 
 void Settings::delete_user_settings_and_files()
@@ -30,7 +43,7 @@ void Settings::delete_user_settings_and_files()
     user_name.clear();
     user_password.clear();
     QFile file(file_manager.get_auth_file_path());
-    file.remove();
+    if(file.remove()) set_is_auth(false);
     QDir dir(file_manager.get_user_files_dir());
     dir.removeRecursively();
 }
@@ -58,6 +71,7 @@ void Settings::load_user_settings()
             auto json_map = json_obj.toVariantMap();
             user_name = json_map[user_name_key].toString();
             user_password = json_map[user_password_key].toString();
+            if(!user_name.isEmpty() && !user_password.isEmpty()) set_is_auth(true);
         }
     }
 }

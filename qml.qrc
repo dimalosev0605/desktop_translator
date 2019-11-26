@@ -26,5 +26,7 @@
         <file>Change_langs_w.qml</file>
         <file>change_langs_icon.svg</file>
         <file>My_account_page.qml</file>
+        <file>Cloud_page.qml</file>
+        <file>Local_files_delegate.qml</file>
     </qresource>
 </RCC>

@@ -9,21 +9,11 @@ Item {
         id: client
         onSuccess_sing_up: {
             settings.save_user_settings(user_name.text, user_password.text)
-            sign_in.enabled = false
-            sign_up.enabled = false
-            user_name.enabled = false
-            user_password.enabled = false
-            exit.enabled = true
             info_lbl.text = "Success sing up!"
             opacity_anim.start()
         }
         onSuccess_sign_in: {
             settings.save_user_settings(user_name.text, user_password.text)
-            sign_in.enabled = false
-            sign_up.enabled = false
-            user_name.enabled = false
-            user_password.enabled = false
-            exit.enabled = true
             info_lbl.text = "Success sing in!"
             opacity_anim.start()
         }
@@ -95,7 +85,7 @@ Item {
                 text: "Sign up"
                 width: (info_lbl.width - 2 * spacing) / 3
                 height: info_lbl.height
-                enabled: settings.get_user_name() === "" ? true : false
+                enabled: !settings.is_auth
                 onClicked: {
                     client.sign_up(user_name.text, user_password.text)
                 }
@@ -105,7 +95,7 @@ Item {
                 text: "Sign in"
                 width: sign_up.width
                 height: info_lbl.height
-                enabled: settings.get_user_name() === "" ? true : false
+                enabled: !settings.is_auth
                 onClicked: {
                     client.sign_in(user_name.text, user_password.text)
                 }
@@ -115,16 +105,11 @@ Item {
                 text: "Exit"
                 width: sign_up.width
                 height: info_lbl.height
-                enabled: settings.get_user_name() === "" ? false : true
+                enabled: settings.is_auth
                 onClicked: {
                     settings.delete_user_settings_and_files()
                     user_name.text = ""
                     user_password.text = ""
-                    sign_in.enabled = true
-                    sign_up.enabled = true
-                    user_name.enabled = true
-                    user_password.enabled = true
-                    exit.enabled = false
                 }
             }
         }
