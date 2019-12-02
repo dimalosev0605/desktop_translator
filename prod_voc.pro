@@ -27,7 +27,8 @@ SOURCES += \
     jsonhelper.cpp \
     settings.cpp \
     filesdatamodelbase.cpp \
-    localfilesdatamodel.cpp
+    localfilesdatamodel.cpp \
+    remotefilesdatamodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -56,4 +57,5 @@ HEADERS += \
     jsonhelper.h \
     settings.h \
     filesdatamodelbase.h \
-    localfilesdatamodel.h
+    localfilesdatamodel.h \
+    remotefilesdatamodel.h

@@ -2,6 +2,7 @@
 #define LOCALFILESDATAMODEL_H
 
 #include "filesdatamodelbase.h"
+#include "filemanager.h"
 
 class LocalFilesDataModel: public FilesDataModelBase
 {

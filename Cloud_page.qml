@@ -1,6 +1,8 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import LocalFilesDataModel_qml 1.0
+import RemoteFilesDataModel_qml 1.0
+import Client_qml 1.0
 
 Item {
     id: cloud_page
@@ -13,8 +15,30 @@ Item {
         anchors.leftMargin: 10
     }
 
+    Client {
+        id: client
+        onSuccess_uploading: {
+            busy_indicator.running = false
+            busy_indicator.visible = false
+        }
+        onList_of_files: {
+            remote_files_data_model.receive_list_of_files(list)
+        }
+    }
+
     LocalFilesDataModel {
         id: local_files_model
+    }
+    RemoteFilesDataModel {
+        id: remote_files_data_model
+    }
+
+    BusyIndicator {
+        id: busy_indicator
+        running: false
+        anchors.centerIn: parent
+        visible: false
+        z: 3
     }
 
     Text {

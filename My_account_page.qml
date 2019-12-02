@@ -7,26 +7,30 @@ Item {
 
     Client {
         id: client
+        onConnected_to_server: {
+            pulsing_anim.stop()
+            info_lbl.text = ""
+        }
         onSuccess_sing_up: {
+            info_lbl.text = "Success sign up"
             settings.save_user_settings(user_name.text, user_password.text)
-            info_lbl.text = "Success sing up!"
             opacity_anim.start()
         }
-        onSuccess_sign_in: {
+        onUnsuccess_sing_up: {
+            info_lbl.text = "Such user name already exists."
+            opacity_anim.start()
+        }
+        onSuccess_sing_in: {
+            info_lbl.text = "Success sign in"
             settings.save_user_settings(user_name.text, user_password.text)
-            info_lbl.text = "Success sing in!"
             opacity_anim.start()
         }
-        onSign_up_conflict: {
-            info_lbl.text = "Such user already exists. Change user name."
-            opacity_anim.start()
-        }
-        onUnlucky_sing_in: {
+        onUnsuccess_sing_in: {
             info_lbl.text = "Incorrect name or password"
             opacity_anim.start()
         }
-        onServer_error: {
-            info_lbl.text = "Server error occurred."
+        onInternal_server_error: {
+            info_lbl.text = "Internal server error"
             opacity_anim.start()
         }
     }
@@ -53,6 +57,7 @@ Item {
             wrapMode: Text.WordWrap
             minimumPointSize: 5
             font.pointSize: 10
+            text: "Connecting to server"
             OpacityAnimator {
                 id: opacity_anim
                 target: info_lbl
@@ -61,6 +66,24 @@ Item {
                 duration: 3000
                 running: false
             }
+            SequentialAnimation {
+                id: pulsing_anim
+                loops: Animation.Infinite
+                running: true
+                OpacityAnimator {
+                    target: info_lbl
+                    from: 1
+                    to: 0
+                    duration: 2000
+                }
+                OpacityAnimator {
+                    target: info_lbl
+                    from: 0
+                    to: 1
+                    duration: 2000
+                }
+            }
+
         }
         TextField {
             id: user_name
@@ -87,7 +110,7 @@ Item {
                 height: info_lbl.height
                 enabled: !settings.is_auth
                 onClicked: {
-                    client.sign_up(user_name.text, user_password.text)
+                    client.sing_up_f(user_name.text, user_password.text)
                 }
             }
             Button {
@@ -97,7 +120,7 @@ Item {
                 height: info_lbl.height
                 enabled: !settings.is_auth
                 onClicked: {
-                    client.sign_in(user_name.text, user_password.text)
+                    client.sing_in_f(user_name.text, user_password.text)
                 }
             }
             Button {

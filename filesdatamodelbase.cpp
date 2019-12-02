@@ -36,6 +36,12 @@ QVariant FilesDataModelBase::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+QString FilesDataModelBase::get_file_name(int index) const
+{
+    if(index < 0 || index >= files.size()) return QString();
+    return files[index].first;
+}
+
 
 
 

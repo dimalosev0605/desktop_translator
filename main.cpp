@@ -6,6 +6,7 @@
 #include "client.h"
 #include "settings.h"
 #include "localfilesdatamodel.h"
+#include "remotefilesdatamodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<Client>("Client_qml", 1, 0, "Client");
     qmlRegisterType<Settings>("Settings_qml", 1, 0, "Settings");
     qmlRegisterType<LocalFilesDataModel>("LocalFilesDataModel_qml", 1, 0, "LocalFilesDataModel");
+    qmlRegisterType<RemoteFilesDataModel>("RemoteFilesDataModel_qml", 1, 0, "RemoteFilesDataModel");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

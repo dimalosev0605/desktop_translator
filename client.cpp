@@ -1,9 +1,6 @@
 #include "client.h"
 
-const QString host_name = "supernovaexplosion.ddns.net";
-
-const QString success_sign_up = "success sign up";
-const QString sign_up_conflict = "sign up conflict";
+const QString Client::host_name = "supernovaexplosion.ddns.net";
 
 Client::Client(QObject* parent)
     :QObject (parent)
@@ -21,46 +18,176 @@ Client::Client(QObject* parent)
     QHostInfo::lookupHost(host_name, this, &Client::search_host);
 }
 
-void Client::process_answer()
+bool Client::upload_file(const QString &file_name)
 {
-    switch(state)
+    if(!socket.isValid()) return false;
+    method = JSonHelper::Method::upload_file;
+    this->file_name = file_name;
+    Settings settings;
+    FileManager file_manager;
+    QFile file(file_manager.get_file_path(file_name));
+    socket.write(json_helper.load_file_json(JSonHelper::Method::upload_file, settings.get_user_name(),
+                                            settings.get_user_password(), file_name, file.size()));
+    return true;
+}
+
+void Client::get_list_of_files()
+{
+    if(!socket.isValid()) return;
+    method = JSonHelper::Method::get_list_of_files;
+    Settings settings;
+    socket.write(json_helper.create_json(method, settings.get_user_name(), settings.get_user_password()));
+}
+
+void Client::sing_in_f(const QString &user_name, const QString &user_password)
+{
+    if(!socket.isValid()) return;
+    method = JSonHelper::Method::sign_in;
+    socket.write(json_helper.create_json(method, user_name, user_password));
+}
+
+void Client::sing_up_f(const QString &user_name, const QString &user_password)
+{
+    if(!socket.isValid()) return;
+    method = JSonHelper::Method::sign_up;
+    socket.write(json_helper.create_json(method, user_name, user_password));
+}
+
+
+void Client::process_data(const QByteArray &data)
+{
+    if(json_helper.is_json(data))
     {
-    case JSonHelper::State::sign_up_conflict:
-    {
-        qDebug() << "sign up conflict";
-        emit this->sign_up_conflict();
-        break;
+        action();
     }
-    case JSonHelper::State::success_sing_up:
-    {
-        qDebug() << "sign up success";
-        emit this->success_sing_up();
-        break;
-    }
-    case JSonHelper::State::server_error:
-    {
-        qDebug() << "server error";
-        emit this->server_error();
-        break;
-    }
+}
+
+void Client::process_sign_in()
+{
+//    if(json_helper.is_json(data))
+//    {
+//        state = json_helper.get_state();
+//        if(state == JSonHelper::State::success_sing_in)
+//            emit success_sing_in();
+//        else
+//            emit unsuccess_sing_in();
+//        data.clear();
+//    }
+    state = json_helper.get_state();
+    switch (state) {
     case JSonHelper::State::success_sing_in:
     {
-        qDebug() << "Success sign in";
-        emit this->success_sign_in();
+        emit success_sing_in();
         break;
     }
-    case JSonHelper::State::unlucky_sing_in:
+    case JSonHelper::State::unsuccess_sing_in:
     {
-        qDebug() << "Unlucky sign in";
-        emit this->unlucky_sing_in();
+        emit unsuccess_sing_in();
+        break;
+    }
+    case JSonHelper::State::internal_server_error:
+    {
+        emit internal_server_error();
+        break;
+    }
+    }
+    data.clear();
+}
+
+
+void Client::process_sign_up()
+{
+//    if(json_helper.is_json(data))
+//    {
+//        state = json_helper.get_state();
+//        if(state == JSonHelper::State::success_sign_up)
+//            emit success_sing_up();
+//        else
+//            emit unsuccess_sing_up();
+//        data.clear();
+//    }
+    state = json_helper.get_state();
+    switch (state) {
+    case JSonHelper::State::success_sign_up:
+    {
+        emit success_sing_up();
+        break;
+    }
+    case JSonHelper::State::unsuccess_sign_up:
+    {
+        emit unsuccess_sing_up();
+        break;
+    }
+    case JSonHelper::State::internal_server_error:
+    {
+        emit internal_server_error();
+        break;
+    }
+    }
+    data.clear();
+}
+
+void Client::process_upload_file()
+{
+    state = json_helper.get_state();
+    switch (state) {
+    case JSonHelper::State::ready_upload_file: {
+        FileManager file_manager;
+        QFile file(file_manager.get_file_path(file_name));
+        if(file.open(QIODevice::ReadOnly))
+        {
+            socket.write(file.readAll());
+        }
+        file.close();
+        data.clear();
+        break;
+    }
+    case JSonHelper::State::success_uploading: {
+        data.clear();
+        emit success_uploading();
         break;
     }
     }
 }
 
+void Client::action()
+{
+    switch (method){
+    case JSonHelper::Method::sign_in:
+    {
+        process_sign_in();
+        break;
+    }
+    case JSonHelper::Method::sign_up:
+    {
+        process_sign_up();
+        break;
+    }
+    case JSonHelper::Method::upload_file:
+    {
+        process_upload_file();
+        break;
+    }
+    case JSonHelper::Method::get_list_of_files: {
+        process_get_list_of_files();
+        break;
+    }
+    }
+}
+
+void Client::process_get_list_of_files()
+{
+    auto list = json_helper.get_list_of_files();
+    data.clear();
+//    emit list_of_files(list);
+}
+
+
 void Client::connected()
 {
     qDebug() << this << " connected";
+    get_list_of_files();
+    emit connected_to_server();
 }
 
 void Client::disconnected()
@@ -73,15 +200,7 @@ void Client::ready_read()
     qDebug() << this << " ready read";
     qint64 bytes_available = socket.bytesAvailable();
     data += socket.read(bytes_available);
-    if(json_helper.is_json_obj(data))
-    {
-        state = json_helper.get_state();
-        data.clear();
-        process_answer();
-    }
-    else
-    {
-    }
+    process_data(data);
 }
 
 void Client::bytes_written(qint64 bytes)
@@ -144,8 +263,7 @@ void Client::search_host(const QHostInfo& host_info)
         qDebug() << "server_ip = " << server_ip;
         emit finished_searching_host();
     }
-    else
-    {
+    else {
         qDebug() << "host not found";
     }
 }
@@ -154,17 +272,6 @@ void Client::connect_to_host()
 {
     socket.connectToHost(server_ip, server_port);
 }
-
-void Client::sign_up(const QString& user_name, const QString& user_password)
-{
-    socket.write(json_helper.create_sing_in_up_doc(user_name, user_password, JSonHelper::Method::sign_up));
-}
-
-void Client::sign_in(const QString& user_name, const QString& user_password)
-{
-    socket.write(json_helper.create_sing_in_up_doc(user_name, user_password, JSonHelper::Method::sign_in));
-}
-
 
 
 

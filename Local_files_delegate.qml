@@ -113,6 +113,16 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 text: "Upload"
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if(busy_indicator.running) return;
+                    if(client.upload_file(local_files_model.get_file_name(index))) {
+                        busy_indicator.running = true
+                        busy_indicator.visible = true
+                    }
+                }
+            }
         }
     }
 }

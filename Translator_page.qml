@@ -115,6 +115,7 @@ Item {
             words_data_model.add_word(user_input_field.text, blocks_data_model.get_transcription(),
                                       means_field.text, translations_filed.text)
             clear_btn.mouse_area.clicked(MouseArea)
+            user_input_field.focus = true
         }
     }
     Translator_control {
@@ -128,6 +129,7 @@ Item {
             user_input_field.clear()
             means_field.clear()
             translations_filed.clear()
+            user_input_field.focus = true
         }
     }
 
