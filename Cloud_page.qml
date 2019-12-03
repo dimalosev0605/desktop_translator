@@ -22,7 +22,7 @@ Item {
             busy_indicator.visible = false
         }
         onList_of_files: {
-            remote_files_data_model.receive_list_of_files(list)
+            remote_files_model.receive_list_of_files(list)
         }
     }
 
@@ -30,7 +30,7 @@ Item {
         id: local_files_model
     }
     RemoteFilesDataModel {
-        id: remote_files_data_model
+        id: remote_files_model
     }
 
     BusyIndicator {
@@ -92,6 +92,20 @@ Item {
         anchors.top: locale_files_frame.top
         width: locale_files_frame.width
         height: 300
+        ScrollView {
+            anchors.fill: parent
+            ListView {
+                id: remote_files_view
+                anchors.fill: parent
+                spacing: 10
+                clip: true
+                model: remote_files_model
+                delegate: Remote_files_delegate {
+                    file_name: String(model.file_name)
+                    modified_date: String(model.modified_date)
+                }
+            }
+        }
     }
 
 }

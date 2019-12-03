@@ -31,6 +31,17 @@ bool Client::upload_file(const QString &file_name)
     return true;
 }
 
+bool Client::download_file(const QString &file_name)
+{
+    if(!socket.isValid()) return false;
+    method = JSonHelper::Method::download_file;
+    this->file_name = file_name;
+    Settings settings;
+    socket.write(json_helper.download_file_json(JSonHelper::Method::download_file, settings.get_user_name(), settings.get_user_password(),
+                                                file_name));
+    return true;
+}
+
 void Client::get_list_of_files()
 {
     if(!socket.isValid()) return;
@@ -56,6 +67,17 @@ void Client::sing_up_f(const QString &user_name, const QString &user_password)
 
 void Client::process_data(const QByteArray &data)
 {
+    if(method == JSonHelper::Method::download_file && data.size() == file_size) {
+        FileManager file_manager;
+        QFile file(file_manager.get_file_path(file_name));
+        if(file.open(QIODevice::WriteOnly)) {
+            file.write(data);
+            file.close();
+            this->data.clear();
+            file_size = 0;
+        }
+        return;
+    }
     if(json_helper.is_json(data))
     {
         action();
@@ -64,15 +86,6 @@ void Client::process_data(const QByteArray &data)
 
 void Client::process_sign_in()
 {
-//    if(json_helper.is_json(data))
-//    {
-//        state = json_helper.get_state();
-//        if(state == JSonHelper::State::success_sing_in)
-//            emit success_sing_in();
-//        else
-//            emit unsuccess_sing_in();
-//        data.clear();
-//    }
     state = json_helper.get_state();
     switch (state) {
     case JSonHelper::State::success_sing_in:
@@ -97,15 +110,6 @@ void Client::process_sign_in()
 
 void Client::process_sign_up()
 {
-//    if(json_helper.is_json(data))
-//    {
-//        state = json_helper.get_state();
-//        if(state == JSonHelper::State::success_sign_up)
-//            emit success_sing_up();
-//        else
-//            emit unsuccess_sing_up();
-//        data.clear();
-//    }
     state = json_helper.get_state();
     switch (state) {
     case JSonHelper::State::success_sign_up:
@@ -172,14 +176,28 @@ void Client::action()
         process_get_list_of_files();
         break;
     }
+    case JSonHelper::Method::download_file: {
+        process_download_file();
+    }
     }
 }
 
 void Client::process_get_list_of_files()
 {
     auto list = json_helper.get_list_of_files();
+    QString res_str;
+    for(int i = 0; i < list.size(); ++i) {
+        res_str += list[i].first + '#' + list[i].second + '#';
+    }
     data.clear();
-//    emit list_of_files(list);
+    emit list_of_files(res_str);
+}
+
+void Client::process_download_file()
+{
+    file_size = json_helper.get_file_size();
+    data.clear();
+    socket.write(json_helper.create_state_json(JSonHelper::State::ready_download_file));
 }
 
 

@@ -11,7 +11,7 @@ public:
     explicit RemoteFilesDataModel(QObject* parent = nullptr);
 
 public slots:
-    void receive_list_of_files(const QStringList& list);
+    void receive_list_of_files(const QString& list);
 };
 
 #endif // REMOTEFILESDATAMODEL_H

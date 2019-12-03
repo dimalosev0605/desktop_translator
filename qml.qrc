@@ -28,5 +28,6 @@
         <file>My_account_page.qml</file>
         <file>Cloud_page.qml</file>
         <file>Local_files_delegate.qml</file>
+        <file>Remote_files_delegate.qml</file>
     </qresource>
 </RCC>

@@ -22,6 +22,7 @@ class Client: public QObject
     JSonHelper::Method method;
     JSonHelper::State state;
     QString file_name;
+    qint64 file_size = 0;
 
     void process_data(const QByteArray& data);
     void process_sign_in();
@@ -29,6 +30,7 @@ class Client: public QObject
     void process_upload_file();
     void action();
     void process_get_list_of_files();
+    void process_download_file();
 
 private slots:
     void connected();
@@ -49,6 +51,7 @@ public slots:
     void sing_in_f(const QString& user_name, const QString& user_password);
     void sing_up_f(const QString& user_name, const QString& user_password);
     bool upload_file(const QString& file_name);
+    bool download_file(const QString& file_name);
 
 signals:
     void finished_searching_host();
@@ -59,7 +62,7 @@ signals:
     void unsuccess_sing_up();
     void internal_server_error();
     void success_uploading();
-    void list_of_files(const QStringList& list);
+    void list_of_files(const QString& list);
 };
 
 #endif // CLIENT_H

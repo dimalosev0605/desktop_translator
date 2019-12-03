@@ -25,15 +25,20 @@ public:
         success_sing_in,
         unsuccess_sing_in,
         ready_upload_file,
-        success_uploading
+        success_uploading,
+        ready_download_file
     };
     State state;
     QList<std::pair<QString, QString>> list_of_files;
+    qint64 file_size;
 public:
     QByteArray create_json(Method method, const QString& user_name, const QString& user_password);
     QByteArray load_file_json(Method method, const QString& user_name, const QString& user_password, const QString& file_name, qint64 size);
+    QByteArray download_file_json(Method method, const QString& user_name, const QString& user_password, const QString& file_name);
+    QByteArray create_state_json(State state);
     bool is_json(const QByteArray& data);
     State get_state() const;
+    qint64 get_file_size() const;
     QList<std::pair<QString, QString>> get_list_of_files() const;
 };
 
