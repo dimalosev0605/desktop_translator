@@ -21,8 +21,17 @@ Item {
             busy_indicator.running = false
             busy_indicator.visible = false
         }
+        onSuccess_downloading:  {
+            busy_indicator.running = false
+            busy_indicator.visible = false
+            local_files_model.update_data()
+        }
         onList_of_files: {
             remote_files_model.receive_list_of_files(list)
+        }
+        onSuccess_deletion: {
+            busy_indicator.running = false
+            busy_indicator.visible = false
         }
     }
 
@@ -57,7 +66,7 @@ Item {
         anchors.topMargin: 10
         border.width: 1
         border.color: "black"
-        width: (cloud_page.width - back_btn.anchors.leftMargin * 3) / 2 // two are left, right margins between frame and window and the last one is the margin between frames.
+        width: (cloud_page.width - back_btn.anchors.leftMargin * 3) / 2 // left, right margins between frame and window and the last one is the margin between frames.
         height: 300
         ScrollView {
             anchors.fill: parent

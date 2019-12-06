@@ -24,13 +24,16 @@ class Client: public QObject
     QString file_name;
     qint64 file_size = 0;
 
-    void process_data(const QByteArray& data);
+    void process_data();
     void process_sign_in();
     void process_sign_up();
     void process_upload_file();
     void action();
     void process_get_list_of_files();
     void process_download_file();
+    void initial();
+    void download_file();
+    void process_delete_file();
 
 private slots:
     void connected();
@@ -45,13 +48,14 @@ private slots:
 
 public:
     explicit Client(QObject* parent = nullptr);
-    void get_list_of_files();
 
 public slots:
     void sing_in_f(const QString& user_name, const QString& user_password);
     void sing_up_f(const QString& user_name, const QString& user_password);
     bool upload_file(const QString& file_name);
     bool download_file(const QString& file_name);
+    void get_list_of_files();
+    bool delete_file(const QString& file_name);
 
 signals:
     void finished_searching_host();
@@ -63,6 +67,8 @@ signals:
     void internal_server_error();
     void success_uploading();
     void list_of_files(const QString& list);
+    void success_downloading();
+    void success_deletion();
 };
 
 #endif // CLIENT_H

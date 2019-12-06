@@ -14,6 +14,7 @@ public:
 
 public slots:
     void delete_file(int index);
+    void update_data();
 };
 
 #endif // LOCALFILESDATAMODEL_H
