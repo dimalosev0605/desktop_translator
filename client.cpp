@@ -18,71 +18,151 @@ Client::Client(QObject* parent)
     QHostInfo::lookupHost(host_name, this, &Client::search_host);
 }
 
+bool Client::sing_in(const QString &user_name, const QString &user_password)
+{
+    if(!socket.isValid()) return false;
+    if(socket.write(json_helper.create_sing_in_up_json(user_name, user_password, JSonHelper::Token::sing_in)) == -1) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+bool Client::sing_up(const QString &user_name, const QString &user_password)
+{
+    if(!socket.isValid()) return false;
+    if(socket.write(json_helper.create_sing_in_up_json(user_name, user_password, JSonHelper::Token::sing_up)) == -1) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 bool Client::upload_file(const QString &file_name)
 {
     if(!socket.isValid()) return false;
-    method = JSonHelper::Method::upload_file;
     this->file_name = file_name;
     Settings settings;
     FileManager file_manager;
     QFile file(file_manager.get_file_path(file_name));
-    socket.write(json_helper.create_json(JSonHelper::Method::upload_file, settings.get_user_name(),
-                                            settings.get_user_password(), file_name, file.size()));
-    return true;
+    if(socket.write(json_helper.create_upload_file_json(settings.get_user_name(), file_name, file.size(),JSonHelper::Token::upload_file)) == -1) {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 bool Client::download_file(const QString &file_name)
 {
     if(!socket.isValid()) return false;
-    method = JSonHelper::Method::download_file;
     this->file_name = file_name;
     Settings settings;
-    socket.write(json_helper.create_json(JSonHelper::Method::download_file, settings.get_user_name(), settings.get_user_password(),
-                                                file_name, 0));
-    return true;
-}
-
-void Client::get_list_of_files()
-{
-    if(!socket.isValid()) return;
-    method = JSonHelper::Method::get_list_of_files;
-    Settings settings;
-    socket.write(json_helper.create_json(method, settings.get_user_name(), settings.get_user_password(), "", 0));
+    if(socket.write(json_helper.create_download_file_json(settings.get_user_name(), file_name, JSonHelper::Token::download_file)) == -1) {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 bool Client::delete_file(const QString &file_name)
 {
     if(!socket.isValid()) return false;
-    method = JSonHelper::Method::delete_file;
     Settings settings;
-    socket.write(json_helper.create_json(method, settings.get_user_name(), settings.get_user_password(), file_name, 0));
-    return true;
-}
-
-void Client::sing_in_f(const QString &user_name, const QString &user_password)
-{
-    if(!socket.isValid()) return;
-    method = JSonHelper::Method::sign_in;
-    socket.write(json_helper.create_json(method, user_name, user_password, "", 0));
-}
-
-void Client::sing_up_f(const QString &user_name, const QString &user_password)
-{
-    if(!socket.isValid()) return;
-    method = JSonHelper::Method::sign_up;
-    socket.write(json_helper.create_json(method, user_name, user_password, "", 0));
-}
-
-void Client::initial()
-{
-    if(json_helper.is_json(data))
-    {
-        state = json_helper.get_state();
-        action();
+    if(socket.write(json_helper.create_delete_file_json(settings.get_user_name(), file_name, JSonHelper::Token::delete_file)) == -1) {
+        return false;
+    }
+    else {
+        return true;
     }
 }
 
-void Client::download_file()
+void Client::process_data()
+{
+    if(token == JSonHelper::Token::ready_receive_file) {
+        if(data.size() == file_size) {
+            save_file();
+            return;
+        }
+        return;
+    }
+    if(json_helper.is_json(data)) {
+        token = json_helper.get_token();
+        file_size = json_helper.get_file_size();
+        data.clear();
+        action();
+    } // else resume receive data...
+}
+
+void Client::action()
+{
+    qDebug() << "Token = " << static_cast<int>(token);
+    switch (token)
+    {
+    case JSonHelper::Token::success_sing_in: {
+        emit success_sing_in();
+        break;
+    }
+    case JSonHelper::Token::unsuccess_sing_in: {
+        emit unsuccess_sing_in();
+        break;
+    }
+    case JSonHelper::Token::success_sing_up: {
+        emit success_sing_up();
+    break;
+    }
+    case JSonHelper::Token::unsuccess_sing_up: {
+        emit unsuccess_sing_up();
+        break;
+    }
+    case JSonHelper::Token::ready_upload_file: {
+        send_file();
+        break;
+    }
+    case JSonHelper::Token::internal_server_error: {
+        emit internal_server_error();
+        break;
+    }
+    case JSonHelper::Token::list_of_files: {
+        emit list_of_files(json_helper.get_files_str());
+        emit connected_to_server();
+        json_helper.clear();
+        break;
+    }
+    case JSonHelper::Token::ready_send_file: {
+        ready_receive_file_response();
+        break;
+    }
+    }
+}
+
+void Client::send_file()
+{
+    FileManager file_manager;
+    QFile file(file_manager.get_file_path(file_name));
+    if(file.open(QIODevice::ReadOnly)) {
+        socket.write(file.readAll());
+        file.close();
+    }
+}
+
+void Client::get_list_of_files()
+{
+    Settings settings;
+    socket.write(json_helper.create_list_of_files_json(settings.get_user_name(), JSonHelper::Token::list_of_files));
+}
+
+void Client::ready_receive_file_response()
+{
+    token = JSonHelper::Token::ready_receive_file;
+    Settings settings;
+    socket.write(json_helper.create_ready_receive_file_json(settings.get_user_name(), file_name));
+}
+
+void Client::save_file()
 {
     FileManager file_manager;
     QFile file(file_manager.get_file_path(file_name));
@@ -91,152 +171,24 @@ void Client::download_file()
         file.close();
         emit success_downloading();
     }
-    data.clear();
-}
-
-void Client::process_delete_file()
-{
-    if(state == JSonHelper::State::success_deletion) {
-        json_helper.clear();
-        data.clear();
-        get_list_of_files();
-        emit success_deletion();
-    }
     else {
-        // TODO
+        emit unsuccess_downloading();
     }
-}
-
-void Client::process_data()
-{
-    if(method == JSonHelper::Method::download_file && data.size() == file_size) {
-        download_file();
-        return;
-    }
-    initial();
-}
-
-void Client::process_sign_in()
-{
-    switch (state) {
-    case JSonHelper::State::success_sing_in:
-    {
-        emit success_sing_in();
-        break;
-    }
-    case JSonHelper::State::unsuccess_sing_in:
-    {
-        emit unsuccess_sing_in();
-        break;
-    }
-    case JSonHelper::State::internal_server_error:
-    {
-        emit internal_server_error();
-        break;
-    }
-    }
-}
-
-
-void Client::process_sign_up()
-{
-    switch (state) {
-    case JSonHelper::State::success_sign_up:
-    {
-        emit success_sing_up();
-        break;
-    }
-    case JSonHelper::State::unsuccess_sign_up:
-    {
-        emit unsuccess_sing_up();
-        break;
-    }
-    case JSonHelper::State::internal_server_error:
-    {
-        emit internal_server_error();
-        break;
-    }
-    }
-}
-
-void Client::process_upload_file()
-{
-    switch (state) {
-    case JSonHelper::State::ready_upload_file: {
-        FileManager file_manager;
-        QFile file(file_manager.get_file_path(file_name));
-        if(file.open(QIODevice::ReadOnly))
-        {
-            socket.write(file.readAll());
-        }
-        file.close();
-        break;
-    }
-    case JSonHelper::State::success_uploading: {
-        json_helper.clear();
-        get_list_of_files();
-        emit success_uploading();
-        break;
-    }
-    }
-}
-
-void Client::action()
-{
-    switch (method){
-    case JSonHelper::Method::sign_in:
-    {
-        process_sign_in();
-        break;
-    }
-    case JSonHelper::Method::sign_up:
-    {
-        process_sign_up();
-        break;
-    }
-    case JSonHelper::Method::upload_file:
-    {
-        process_upload_file();
-        break;
-    }
-    case JSonHelper::Method::get_list_of_files: {
-        process_get_list_of_files();
-        break;
-    }
-    case JSonHelper::Method::download_file: {
-        process_download_file();
-        break; // не было break, не было Method::delete_file...
-    }
-    case JSonHelper::Method::delete_file: {
-        process_delete_file();
-        break;
-    }
-    }
+    token = static_cast<JSonHelper::Token>(99999);
     data.clear();
-}
-
-void Client::process_get_list_of_files()
-{
-    auto list = json_helper.get_list_of_files();
-    QString res_str;
-    for(int i = 0; i < list.size(); ++i) {
-        res_str += list[i].first + '#' + list[i].second + '#';
-    }
-    emit list_of_files(res_str);
-}
-
-void Client::process_download_file()
-{
-    file_size = json_helper.get_file_size();
-    socket.write(json_helper.create_state_json(JSonHelper::State::ready_download_file));
 }
 
 
 void Client::connected()
 {
     qDebug() << this << " connected";
-    get_list_of_files();
-    emit connected_to_server();
+    Settings settings;
+    if(!settings.get_user_name().isEmpty()) {
+        get_list_of_files();
+    }
+    else {
+        emit connected_to_server();
+    }
 }
 
 void Client::disconnected()
@@ -299,6 +251,7 @@ void Client::error(QAbstractSocket::SocketError socketError)
     switch (socketError) {
     case QAbstractSocket::SocketError::ConnectionRefusedError:
     {
+        emit server_refused_connection();
         break;
     }
     }
@@ -311,9 +264,6 @@ void Client::search_host(const QHostInfo& host_info)
         server_ip = server_ips.first().toString();
         qDebug() << "server_ip = " << server_ip;
         emit finished_searching_host();
-    }
-    else {
-        qDebug() << "host not found";
     }
 }
 

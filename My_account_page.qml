@@ -5,33 +5,52 @@ import Client_qml 1.0
 Item {
     id: my_account_page
 
+
+    function wait_info_lbl () {
+        info_lbl.text = "Please wait"
+        pulsing_anim.running = true
+    }
+
     Client {
         id: client
         onConnected_to_server: {
-            pulsing_anim.stop()
-            info_lbl.text = ""
+            info_lbl.visible = false
         }
-        onSuccess_sing_up: {
-            info_lbl.text = "Success sign up"
-            settings.save_user_settings(user_name.text, user_password.text)
-            opacity_anim.start()
-        }
-        onUnsuccess_sing_up: {
-            info_lbl.text = "Such user name already exists."
-            opacity_anim.start()
+        onServer_refused_connection: {
+            pulsing_anim.running = false
+            info_lbl.visible = true
+            info_lbl.text = "Connection to server was refused. Try later."
         }
         onSuccess_sing_in: {
-            info_lbl.text = "Success sign in"
             settings.save_user_settings(user_name.text, user_password.text)
+            info_lbl.text = "Success sing in!"
+            info_lbl.visible = true
+            pulsing_anim.running = false
             opacity_anim.start()
         }
         onUnsuccess_sing_in: {
-            info_lbl.text = "Incorrect name or password"
+            info_lbl.text = "Incorrect user name or password."
+            info_lbl.visible = true
+            pulsing_anim.running = false
+            opacity_anim.start()
+        }
+        onSuccess_sing_up: {
+            settings.save_user_settings(user_name.text, user_password.text)
+            info_lbl.visible = true
+            pulsing_anim.running = false
+            info_lbl.text = "Success sing up!"
+            opacity_anim.start()
+        }
+        onUnsuccess_sing_up: {
+            info_lbl.text = "Such user already exist. Please change user name."
+            info_lbl.visible = true
+            pulsing_anim.running = false
             opacity_anim.start()
         }
         onInternal_server_error: {
-            info_lbl.text = "Internal server error"
-            opacity_anim.start()
+            pulsing_anim.running = false
+            info_lbl.visible = true
+            info_lbl.text = "Internal server error. Try later."
         }
     }
 
@@ -57,7 +76,7 @@ Item {
             wrapMode: Text.WordWrap
             minimumPointSize: 5
             font.pointSize: 10
-            text: "Connecting to server"
+            text: "Connecting to server..."
             OpacityAnimator {
                 id: opacity_anim
                 target: info_lbl
@@ -110,7 +129,10 @@ Item {
                 height: info_lbl.height
                 enabled: !settings.is_auth
                 onClicked: {
-                    client.sing_up_f(user_name.text, user_password.text)
+                    if(user_name.text === "" || user_password.text === "") return
+                    if(client.sing_up(user_name.text, user_password.text)) {
+                        wait_info_lbl()
+                    }
                 }
             }
             Button {
@@ -120,7 +142,10 @@ Item {
                 height: info_lbl.height
                 enabled: !settings.is_auth
                 onClicked: {
-                    client.sing_in_f(user_name.text, user_password.text)
+                    if(user_name.text === "" || user_password.text === "") return
+                    if(client.sing_in(user_name.text, user_password.text)) {
+                        wait_info_lbl()
+                    }
                 }
             }
             Button {

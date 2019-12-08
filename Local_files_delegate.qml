@@ -116,10 +116,11 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if(busy_indicator.running) return;
+                    if(busy_indicator.running) return
                     if(client.upload_file(local_files_model.get_file_name(index))) {
-                        busy_indicator.running = true
+                        info_lbl.text = "Uploading..."
                         busy_indicator.visible = true
+                        busy_indicator.running = true
                     }
                 }
             }

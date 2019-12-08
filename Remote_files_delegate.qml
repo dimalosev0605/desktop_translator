@@ -91,10 +91,11 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if(busy_indicator.running) return;
+                    if(busy_indicator.running) return
                     if(client.delete_file(remote_files_model.get_file_name(index))) {
-                        busy_indicator.running = true
+                        info_lbl.text = "Deleting..."
                         busy_indicator.visible = true
+                        busy_indicator.running = true
                     }
                 }
             }
@@ -120,10 +121,11 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if(busy_indicator.running) return;
+                    if(busy_indicator.running) return
                     if(client.download_file(remote_files_model.get_file_name(index))) {
-                        busy_indicator.running = true
+                        info_lbl.text = "Downloading..."
                         busy_indicator.visible = true
+                        busy_indicator.running = true
                     }
                 }
             }

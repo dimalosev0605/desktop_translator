@@ -17,21 +17,35 @@ Item {
 
     Client {
         id: client
-        onSuccess_uploading: {
-            busy_indicator.running = false
-            busy_indicator.visible = false
-        }
-        onSuccess_downloading:  {
-            busy_indicator.running = false
-            busy_indicator.visible = false
-            local_files_model.update_data()
+        onInternal_server_error: {
+            // TODO
         }
         onList_of_files: {
+            //Success uploading (or success deleting) need update padding of remote files model
             remote_files_model.receive_list_of_files(list)
-        }
-        onSuccess_deletion: {
-            busy_indicator.running = false
             busy_indicator.visible = false
+            busy_indicator.running = false
+        }
+        onConnected_to_server: {
+            busy_indicator.visible = false
+            busy_indicator.running = false
+        }
+        onServer_refused_connection: {
+            busy_indicator.visible = false
+            busy_indicator.running = false
+            info_lbl.text = "Connection to server was refused. Try later."
+            info_lbl.visible = true
+        }
+        onSuccess_downloading: {
+            busy_indicator.visible = false
+            busy_indicator.running = false
+            local_files_model.update_data()
+        }
+        onUnsuccess_downloading: {
+            // TODO
+//            busy_indicator.visible = false
+//            busy_indicator.running = false
+//            info_lbl.text = "unsuccessful loading."
         }
     }
 
@@ -44,10 +58,44 @@ Item {
 
     BusyIndicator {
         id: busy_indicator
-        running: false
-        anchors.centerIn: parent
-        visible: false
+        running: true
+        anchors.centerIn: remote_files_frame
+        visible: true
         z: 3
+    }
+    Label {
+        id: info_lbl
+        text: "Connecting to server..."
+        z: 3
+        visible: busy_indicator.running
+        anchors.horizontalCenter: busy_indicator.horizontalCenter
+        anchors.top: busy_indicator.bottom
+        height: 40
+        width: 200
+        fontSizeMode: Text.Fit
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
+        wrapMode: Text.WordWrap
+        minimumPointSize: 5
+        font.pointSize: 12
+        SequentialAnimation {
+            id: pulsing_anim
+            loops: Animation.Infinite
+            running: busy_indicator.running
+            OpacityAnimator {
+                target: info_lbl
+                from: 1
+                to: 0
+                duration: 2000
+            }
+            OpacityAnimator {
+                target: info_lbl
+                from: 0
+                to: 1
+                duration: 2000
+            }
+        }
     }
 
     Text {

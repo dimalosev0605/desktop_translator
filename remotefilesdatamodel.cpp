@@ -5,28 +5,21 @@ RemoteFilesDataModel::RemoteFilesDataModel(QObject* parent)
 {
 }
 
-void RemoteFilesDataModel::receive_list_of_files(const QString& list)
+void RemoteFilesDataModel::receive_list_of_files(const QString &list)
 {
-    auto l = list.split('#', QString::SkipEmptyParts);
-    if(l.isEmpty()) {
-        if(!files.isEmpty()) {
-            beginRemoveRows(QModelIndex(), 0, files.size() - 1);
-            files.clear();
-            endRemoveRows();
-        }
-        return;
-    }
-    if(!files.isEmpty())
-    {
+    if(!files.isEmpty()) {
         beginRemoveRows(QModelIndex(), 0, files.size() - 1);
         files.clear();
         endRemoveRows();
     }
-    beginInsertRows(QModelIndex(), 0, l.size() / 2 - 1);
-    for(int i = 0; i < l.size() - 1; i += 2) {
-        files.push_back({{l[i]},{l[i + 1]}});
+    if(list.isEmpty()) return;
+    auto pairs = list.split('#', QString::SkipEmptyParts);
+    beginInsertRows(QModelIndex(), 0, pairs.size() / 2 - 1);
+    for(int i = 0; i < pairs.size(); i+= 2) {
+        files.push_back({{pairs[i]},{pairs[i + 1]}});
     }
     endInsertRows();
 }
+
 
 
