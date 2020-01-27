@@ -102,7 +102,6 @@ Item {
                     duration: 2000
                 }
             }
-
         }
         TextField {
             id: user_name

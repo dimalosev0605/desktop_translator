@@ -76,6 +76,7 @@ Rectangle {
             border.color: "black"
             height: root.height
             width: 70
+            color: delete_btn_m_area.containsMouse ? "#dedede" : "white"
             Text {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -89,7 +90,9 @@ Rectangle {
                 text: "Delete"
             }
             MouseArea {
+                id: delete_btn_m_area
                 anchors.fill: parent
+                hoverEnabled: true
                 onClicked: {
                     local_files_model.delete_file(index)
                 }
@@ -101,6 +104,7 @@ Rectangle {
             border.color: "black"
             height: root.height
             width: delete_btn.width
+            color: upload_btn_m_area.containsMouse ? "#80ff4a" : "white"
             Text {
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
@@ -114,7 +118,9 @@ Rectangle {
                 text: "Upload"
             }
             MouseArea {
+                id: upload_btn_m_area
                 anchors.fill: parent
+                hoverEnabled: true
                 onClicked: {
                     if(busy_indicator.running) return
                     if(client.upload_file(local_files_model.get_file_name(index))) {

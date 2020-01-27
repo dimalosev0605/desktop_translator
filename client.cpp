@@ -1,6 +1,7 @@
 #include "client.h"
 
 const QString Client::host_name = "supernovaexplosion.ddns.net";
+//const QString Client::host_name = "10.123.12.130";
 
 Client::Client(QObject* parent)
     :QObject (parent)
@@ -21,7 +22,7 @@ Client::Client(QObject* parent)
 bool Client::sing_in(const QString &user_name, const QString &user_password)
 {
     if(!socket.isValid()) return false;
-    if(socket.write(json_helper.create_sing_in_up_json(user_name, user_password, JSonHelper::Token::sing_in)) == -1) {
+    if(socket.write(json_helper.create_json(JSonHelper::Token::sing_in, user_name, user_password)) == -1) {
         return false;
     }
     else {
@@ -32,7 +33,7 @@ bool Client::sing_in(const QString &user_name, const QString &user_password)
 bool Client::sing_up(const QString &user_name, const QString &user_password)
 {
     if(!socket.isValid()) return false;
-    if(socket.write(json_helper.create_sing_in_up_json(user_name, user_password, JSonHelper::Token::sing_up)) == -1) {
+    if(socket.write(json_helper.create_json(JSonHelper::Token::sing_up, user_name, user_password)) == -1) {
         return false;
     }
     else {
@@ -47,7 +48,7 @@ bool Client::upload_file(const QString &file_name)
     Settings settings;
     FileManager file_manager;
     QFile file(file_manager.get_file_path(file_name));
-    if(socket.write(json_helper.create_upload_file_json(settings.get_user_name(), file_name, file.size(),JSonHelper::Token::upload_file)) == -1) {
+    if(socket.write(json_helper.create_json(JSonHelper::Token::upload_file, settings.get_user_name(), "", file_name, file.size())) == -1) {
         return false;
     }
     else {
@@ -60,7 +61,7 @@ bool Client::download_file(const QString &file_name)
     if(!socket.isValid()) return false;
     this->file_name = file_name;
     Settings settings;
-    if(socket.write(json_helper.create_download_file_json(settings.get_user_name(), file_name, JSonHelper::Token::download_file)) == -1) {
+    if(socket.write(json_helper.create_json(JSonHelper::Token::download_file, settings.get_user_name(), "", file_name)) == -1) {
         return false;
     }
     else {
@@ -72,7 +73,7 @@ bool Client::delete_file(const QString &file_name)
 {
     if(!socket.isValid()) return false;
     Settings settings;
-    if(socket.write(json_helper.create_delete_file_json(settings.get_user_name(), file_name, JSonHelper::Token::delete_file)) == -1) {
+    if(socket.write(json_helper.create_json(JSonHelper::Token::delete_file, settings.get_user_name(), "", file_name))) {
         return false;
     }
     else {
@@ -152,14 +153,14 @@ void Client::send_file()
 void Client::get_list_of_files()
 {
     Settings settings;
-    socket.write(json_helper.create_list_of_files_json(settings.get_user_name(), JSonHelper::Token::list_of_files));
+    socket.write(json_helper.create_json(JSonHelper::Token::list_of_files, settings.get_user_name()));
 }
 
 void Client::ready_receive_file_response()
 {
     token = JSonHelper::Token::ready_receive_file;
     Settings settings;
-    socket.write(json_helper.create_ready_receive_file_json(settings.get_user_name(), file_name));
+    socket.write(json_helper.create_json(JSonHelper::Token::ready_receive_file, settings.get_user_name(), "", file_name));
 }
 
 void Client::save_file()

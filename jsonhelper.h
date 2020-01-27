@@ -28,15 +28,12 @@ public:
     };
 
     bool is_json(const QByteArray& data);
-    QByteArray create_sing_in_up_json(const QString& user_name, const QString& user_password, Token token);
-    QByteArray create_upload_file_json(const QString &user_name, const QString &file_name, qint64 file_size, JSonHelper::Token token);
-    QByteArray create_list_of_files_json(const QString& user_name, Token token);
-    QByteArray create_download_file_json(const QString& user_name, const QString& file_name, Token token);
-    QByteArray create_ready_receive_file_json(const QString& user_name, const QString& file_name);
-    QByteArray create_delete_file_json(const QString& user_name, const QString& file_name, Token token);
+    QByteArray create_json(Token token, const QString& user_name, const QString& user_password = "", const QString& file_name = "", const qint64 file_size = 0);
+
     Token get_token() const;
     QString get_files_str() const;
     qint64 get_file_size() const;
+
     void clear();
 
 private:

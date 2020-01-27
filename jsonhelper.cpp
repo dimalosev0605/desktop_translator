@@ -3,7 +3,6 @@
 const QString name_key = "name";
 const QString password_key = "password";
 const QString token_key = "token";
-
 const QString file_name_key = "file_name";
 const QString length_key = "length";
 const QString state_key = "state";
@@ -38,72 +37,24 @@ bool JSonHelper::is_json(const QByteArray &data)
     }
 }
 
-QByteArray JSonHelper::create_sing_in_up_json(const QString &user_name, const QString &user_password, Token token)
+
+QByteArray JSonHelper::create_json(Token token, const QString& user_name, const QString& user_password, const QString& file_name, const qint64 file_size)
 {
     QJsonObject obj;
-    obj.insert(token_key, static_cast<int>(token));
-    obj.insert(name_key, user_name);
-    obj.insert(password_key, user_password);
 
-    QJsonDocument doc;
-    doc.setObject(obj);
-    return doc.toJson();
-}
-
-QByteArray JSonHelper::create_upload_file_json(const QString &user_name, const QString &file_name, qint64 file_size, JSonHelper::Token token)
-{
-    QJsonObject obj;
-    obj.insert(token_key, static_cast<int>(token));
-    obj.insert(name_key, user_name);
-    obj.insert(file_name_key, file_name);
-    obj.insert(length_key, file_size);
-
-    QJsonDocument doc;
-    doc.setObject(obj);
-    return doc.toJson();
-}
-
-QByteArray JSonHelper::create_list_of_files_json(const QString &user_name, JSonHelper::Token token)
-{
-    QJsonObject obj;
     obj.insert(token_key, static_cast<int>(token));
     obj.insert(name_key, user_name);
 
-    QJsonDocument doc;
-    doc.setObject(obj);
-    return doc.toJson();
-}
-
-QByteArray JSonHelper::create_download_file_json(const QString &user_name, const QString& file_name, JSonHelper::Token token)
-{
-    QJsonObject obj;
-    obj.insert(token_key, static_cast<int>(token));
-    obj.insert(name_key, user_name);
-    obj.insert(file_name_key, file_name);
-
-    QJsonDocument doc;
-    doc.setObject(obj);
-    return doc.toJson();
-}
-
-QByteArray JSonHelper::create_ready_receive_file_json(const QString& user_name, const QString& file_name)
-{
-    QJsonObject obj;
-    obj.insert(token_key, static_cast<int>(Token::ready_receive_file));
-    obj.insert(name_key, user_name);
-    obj.insert(file_name_key, file_name);
-
-    QJsonDocument doc;
-    doc.setObject(obj);
-    return doc.toJson();
-}
-
-QByteArray JSonHelper::create_delete_file_json(const QString &user_name, const QString &file_name, JSonHelper::Token token)
-{
-    QJsonObject obj;
-    obj.insert(token_key, static_cast<int>(token));
-    obj.insert(name_key, user_name);
-    obj.insert(file_name_key, file_name);
+    if(token == Token::sing_in || token == Token::sing_up) {
+        obj.insert(password_key, user_password);
+    }
+    if(token == Token::upload_file) {
+        obj.insert(file_name_key, file_name);
+        obj.insert(length_key, file_size);
+    }
+    if(token == Token::download_file || token == Token::delete_file || token == Token::ready_receive_file) {
+        obj.insert(file_name_key, file_name);
+    }
 
     QJsonDocument doc;
     doc.setObject(obj);
